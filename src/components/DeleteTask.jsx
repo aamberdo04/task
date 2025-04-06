@@ -1,3 +1,5 @@
+// TaskList.jsx
+// it's actually delete the task on local storage but through the check box, not through the delete button
 import React, { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
 import TaskDetailsModal from "./TaskDetailsModal";
@@ -17,17 +19,19 @@ function TaskList() {
 
   // Handle checkbox completion
   const handleCompleteTask = (updatedTask) => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === updatedTask.id ? { ...task, completed: !task.completed } : task
-    );
+    // Remove the task from the list if completed
+    const updatedTasks = tasks.filter((task) => task.id !== updatedTask.id);  // Corrected 'completedTask' to 'updatedTask'
+
+    // Update the state and localStorage
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  
+
+    // If the selected task is the one completed, update the selectedTask
     if (selectedTask && selectedTask.id === updatedTask.id) {
-      setSelectedTask({ ...updatedTask, completed: !updatedTask.completed });
+      setSelectedTask(null);
     }
   };
-  
+
   // Open task modal
   const handleViewDetails = (task) => {
     setSelectedTask(task);

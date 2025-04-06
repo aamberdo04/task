@@ -1,64 +1,55 @@
-import React, { useState } from "react";
-import TaskCard from "./TaskCard";
-import TaskDetailsModal from "./TaskDetailsModal";
+import React from "react";
 
-function TaskList() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      taskName: "Sample Task",
-      taskDescription: "This is a test task",
-      selectedDate: "2025-04-10",
-      isUrgent: true,
-      isImportant: false,
-      isCompleted: false,
-    },
-    // Add more tasks here...
-  ]);
-
-  const [selectedTask, setSelectedTask] = useState(null);
-
-  const handleCompleteTask = (updatedTask) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      )
-    );
-
-    // Only update modal if it's already open
-    if (selectedTask && selectedTask.id === updatedTask.id) {
-      setSelectedTask(updatedTask);
-    }
-  };
-
-  const openTaskDetailsModal = (task) => {
-    setSelectedTask(task);
-  };
-
-  const closeTaskDetailsModal = () => {
-    setSelectedTask(null);
+function TaskDetailsModal({ task, onClose, onCompleteTask }) {
+  const handleCheckboxChange = () => {
+    onCompleteTask(task); // Trigger task completion toggle
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      {tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          onViewDetails={openTaskDetailsModal}
-          onCompleteTask={handleCompleteTask}
-        />
-      ))}
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h3
+          className={`text-2xl font-semibold mb-4 ${
+            task.completed ? "line-through text-gray-500" : ""
+          }`}
+        >
+          {task.title}
+        </h3>
+        <p
+          className={`mb-4 ${
+            task.completed ? "line-through text-gray-500" : ""
+          }`}
+        >
+          {task.description}
+        </p>
 
-      {selectedTask && (
-        <TaskDetailsModal
-          task={selectedTask}
-          onClose={closeTaskDetailsModal}
-          onCompleteTask={handleCompleteTask}
-        />
-      )}
+        {/* Display task status */}
+        <p className="text-sm mb-4">
+          Status: {task.completed ? "Completed" : "Pending"}
+        </p>
+
+        {/* Checkbox to mark task as completed */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={handleCheckboxChange}
+            className="mr-2"
+          />
+          <span>Mark as completed</span>
+        </div>
+
+        <div className="mt-6">
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+          >
+            Close
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default TaskList;
+export default TaskDetailsModal;

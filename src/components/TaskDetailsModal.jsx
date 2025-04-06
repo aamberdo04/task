@@ -31,13 +31,18 @@ function TaskDetailsModal({ task, onClose, onCompleteTask }) {
               {task.taskName}
             </h3>
 
-            {/* Completion Checkbox */}
-            <input
-              type="checkbox"
-              checked={task.isCompleted || false}
-              onChange={handleCheckboxChange}
-              className="ml-4"
-            />
+        {/* Checkbox to mark task as completed */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={handleCheckboxChange}
+            className="mr-2"
+          />
+          <span>Mark as completed</span>
+        </div>
+
+
           </div>
 
           <p className="text-sm text-gray-700 mt-2">
@@ -59,6 +64,15 @@ function TaskDetailsModal({ task, onClose, onCompleteTask }) {
                 Important
               </span>
             )}
+            {/* Status label with dynamic background color */}
+            <span
+              className={`inline-block text-xs py-1 px-2 rounded-full ${
+                task.completed ? "bg-green-500 text-white" : "bg-white text-black border border-gray-500"
+              }`}
+            >
+              {task.completed ? "Completed" : "Pending"}
+            </span>
+            
           </div>
         </div>
 
