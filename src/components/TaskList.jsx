@@ -1,85 +1,135 @@
 import React, { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
 import TaskDetailsModal from "./TaskDetailsModal";
-import AddProject from "./AddProject";  // Import the AddProject component for adding new tasks
+import AddProject from "./AddProject";
 
-const TaskList = () => {
+function TaskList() {
   const [tasks, setTasks] = useState([]);
-  const [isVisible, setIsVisible] = useState(false); // State to control Add Project popup visibility
-  const [selectedTask, setSelectedTask] = useState(null); // State to hold the selected task for details modal
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the visibility of the task details modal
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Fetch tasks from localStorage on component mount
+  // Load tasks from localStorage on mount
   useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(storedTasks);
+    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    setTasks(savedTasks);
   }, []);
 
-  // Categorize tasks into four sections
-  const urgentImportant = tasks.filter(task => task.isUrgent && task.isImportant);
-  const importantNotUrgent = tasks.filter(task => !task.isUrgent && task.isImportant);
-  const urgentNotImportant = tasks.filter(task => task.isUrgent && !task.isImportant);
-  const neither = tasks.filter(task => !task.isUrgent && !task.isImportant);
+  // Handle checkbox completion
+  const handleCompleteTask = (updatedTask) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task
+    );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
 
-  const openTaskDetailsModal = (task) => {
+    if (selectedTask && selectedTask.id === updatedTask.id) {
+      setSelectedTask(updatedTask);
+    }
+  };
+
+  // Open task modal
+  const handleViewDetails = (task) => {
     setSelectedTask(task);
-    setIsModalOpen(true); // Open the task details modal
+    setIsModalOpen(true);
   };
 
-  const closeTaskDetailsModal = () => {
-    setIsModalOpen(false); // Close the task details modal
+  const handleCloseModal = () => {
+    setSelectedTask(null);
+    setIsModalOpen(false);
   };
+
+  // Quadrant categories
+  const urgentImportant = tasks.filter((task) => task.isUrgent && task.isImportant);
+  const notUrgentImportant = tasks.filter((task) => !task.isUrgent && task.isImportant);
+  const urgentNotImportant = tasks.filter((task) => task.isUrgent && !task.isImportant);
+  const notUrgentNotImportant = tasks.filter((task) => !task.isUrgent && !task.isImportant);
 
   return (
-    <div className="px-15 py-5"> {/* Apply 60px padding to the left and right, 20px padding to top and bottom */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">To Do</h2>
-        {/* Add Task Button */}
+    <div className="px-4 py-6 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">To Do</h2>
         <button
-          className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-600"
-          onClick={() => setIsVisible(true)} // Show the Add Project popup when clicked
+          className="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600"
+          onClick={() => setIsVisible(true)}
         >
           Add Task
         </button>
       </div>
 
-      {/* Add Project Popup (Modal) */}
-      <AddProject 
-        isVisible={isVisible} 
-        closePopUp={() => setIsVisible(false)} 
-        setTasks={setTasks} 
+      {/* Add Task Popup */}
+      <AddProject
+        isVisible={isVisible}
+        closePopUp={() => setIsVisible(false)}
+        setTasks={setTasks}
       />
 
-      {/* Display tasks in categories */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-        <TaskCategory title="🔥 Urgent & Important" tasks={urgentImportant} bgColor="bg-red-200" onViewDetails={openTaskDetailsModal} />
-        <TaskCategory title="⭐ Important but Not Urgent" tasks={importantNotUrgent} bgColor="bg-yellow-200" onViewDetails={openTaskDetailsModal} />
-        <TaskCategory title="⚡ Urgent but Not Important" tasks={urgentNotImportant} bgColor="bg-orange-200" onViewDetails={openTaskDetailsModal} />
-        <TaskCategory title="✅ Not Urgent & Not Important" tasks={neither} bgColor="bg-gray-200" onViewDetails={openTaskDetailsModal} />
+      {/* Task Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <TaskCategory
+          title="🔥 Urgent & Important"
+          tasks={urgentImportant}
+          bgColor="bg-red-100"
+          onViewDetails={handleViewDetails}
+          onCompleteTask={handleCompleteTask}
+        />
+        <TaskCategory
+          title="🌿 Not Urgent but Important"
+          tasks={notUrgentImportant}
+          bgColor="bg-green-100"
+          onViewDetails={handleViewDetails}
+          onCompleteTask={handleCompleteTask}
+        />
+        <TaskCategory
+          title="⚡ Urgent but Not Important"
+          tasks={urgentNotImportant}
+          bgColor="bg-yellow-100"
+          onViewDetails={handleViewDetails}
+          onCompleteTask={handleCompleteTask}
+        />
+        <TaskCategory
+          title="💤 Not Urgent & Not Important"
+          tasks={notUrgentNotImportant}
+          bgColor="bg-gray-100"
+          onViewDetails={handleViewDetails}
+          onCompleteTask={handleCompleteTask}
+        />
       </div>
 
-      {/* Task Details Modal */}
+      {/* Modal for task details */}
       {isModalOpen && selectedTask && (
-        <TaskDetailsModal task={selectedTask} onClose={closeTaskDetailsModal} />
+        <TaskDetailsModal
+          task={selectedTask}
+          onClose={handleCloseModal}
+          onCompleteTask={handleCompleteTask}
+        />
       )}
     </div>
   );
-};
+}
 
-// Reusable TaskCategory Component
-const TaskCategory = ({ title, tasks, bgColor, onViewDetails }) => (
-  <div className={`p-4 rounded-md shadow ${bgColor} h-auto max-w-full`}>
-    <h3 className="font-semibold mb-2">{title}</h3>
-    {tasks.length > 0 ? (
-      <div className="grid grid-cols-1 gap-4">
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onViewDetails={onViewDetails} />
-        ))}
-      </div>
-    ) : (
-      <p className="text-sm text-gray-500">No tasks available</p>
-    )}
-  </div>
-);
+// Category Section Component
+function TaskCategory({ title, tasks, bgColor, onViewDetails, onCompleteTask }) {
+  return (
+    <div className={`p-4 rounded-xl shadow ${bgColor}`}>
+      <h3 className="text-lg font-semibold mb-3">{title}</h3>
+      {tasks.length === 0 ? (
+        <p className="text-sm text-gray-500">No tasks here</p>
+      ) : (
+        <div className="space-y-4">
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onViewDetails={onViewDetails}
+              onCompleteTask={onCompleteTask}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default TaskList;

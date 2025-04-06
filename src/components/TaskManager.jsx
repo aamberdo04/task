@@ -1,42 +1,55 @@
 import React, { useState, useEffect } from "react";
-import AddProject from "./AddProject"; // Import AddProject component
+import TaskCard from "./TaskCard";
+import TaskDetailsModal from "./TaskDetailsModal";
 
 function TaskManager() {
-    const [tasks, setTasks] = useState([]);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
-    // Load tasks from localStorage when the component first mounts
-    useEffect(() => {
-        const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        setTasks(storedTasks);
-    }, []);
+  // Fetch tasks from local storage or any other data source
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    setTasks(savedTasks);
+  }, []);
 
-    return (
-        <div>
-            {/* Button to open the modal */}
-            <button onClick={() => setIsModalVisible(true)}>Add Task</button>
+  const handleViewDetails = (task) => {
+    setSelectedTask(task);
+  };
 
-            {/* Pass tasks and setTasks to AddProject */}
-            <AddProject
-                isVisible={isModalVisible}
-                closePopUp={() => setIsModalVisible(false)}
-                setTasks={setTasks}
-            />
+  const handleCloseModal = () => {
+    setSelectedTask(null);
+  };
 
-            {/* Display tasks */}
-            <div>
-                <h2>Tasks:</h2>
-                <ul>
-                    {tasks.map((task) => (
-                        <li key={task.id}>
-                            <div>{task.taskName}</div>
-                            <p>{task.taskDescription}</p>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </div>
+  const handleCompleteTask = (taskId, isCompleted) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, isCompleted } : task
     );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks)); // Save updated tasks in local storage
+  };
+
+  return (
+    <div>
+      <div>
+        {tasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            onViewDetails={handleViewDetails}
+            onCompleteTask={handleCompleteTask}
+          />
+        ))}
+      </div>
+
+      {selectedTask && (
+        <TaskDetailsModal
+          task={selectedTask}
+          onClose={handleCloseModal}
+          onCompleteTask={handleCompleteTask}
+        />
+      )}
+    </div>
+  );
 }
 
 export default TaskManager;

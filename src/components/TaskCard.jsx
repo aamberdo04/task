@@ -1,19 +1,31 @@
-import React from "react";
+// TaskCard.jsx
 
-function TaskCard({ task, onViewDetails }) {
+function TaskCard({ task, onViewDetails, onCompleteTask }) {
+  const handleCheckboxChange = (e) => {
+    e.stopPropagation(); // Prevent triggering onViewDetails
+    const updatedTask = { ...task, isCompleted: e.target.checked };
+    onCompleteTask(updatedTask);
+  };
+
   return (
-    <div className="border p-4 rounded bg-white shadow-sm w-full max-w-md">
-      {/* Task Name */}
-      <h3 className="font-semibold text-lg">{task.taskName}</h3>
-
-      {/* Task Description */}
-      <p className="text-sm text-gray-700">{task.taskDescription}</p>
-
-      {/* Due Date with top margin */}
-      <p className="text-sm text-gray-500 mt-2">Due: {task.selectedDate}</p>
-
-      {/* Labels for Urgent and Important */}
-      <div className="mt-2">
+    <div className="w-full max-w-md bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition">
+      <div className="flex items-start justify-between">
+        <div>
+          <h3
+            className={`text-lg font-semibold ${
+              task.isCompleted ? "line-through text-gray-400" : ""
+            }`}
+          >
+            {task.taskName}
+          </h3>
+          <p
+            className={`text-sm ${
+              task.isCompleted ? "line-through text-gray-400" : ""
+            }`}
+          >
+            {task.taskDescription}
+          </p>
+          <div className="mt-2">
         {task.isUrgent && (
           <span className="inline-block bg-red-500 text-white text-xs py-1 px-2 rounded-full mr-2">
             Urgent
@@ -25,14 +37,27 @@ function TaskCard({ task, onViewDetails }) {
           </span>
         )}
       </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Due: {task.selectedDate}
+          </p>
+        </div>
 
-      {/* View Details Button */}
-      <button
-        className="mt-4 text-blue-500 hover:text-blue-700"
-        onClick={() => onViewDetails(task)}
-      >
-        View Details
-      </button>
+        <input
+          type="checkbox"
+          className="ml-4 mt-2"
+          checked={!!task.isCompleted}
+          onChange={handleCheckboxChange}
+        />
+      </div>
+
+      <div className="mt-3 flex justify-center">
+        <button
+          onClick={() => onViewDetails(task)} // Modal only opens from this button
+       className="mt-4 text-blue-500 hover:text-blue-700"
+        >
+          View Details
+        </button>
+      </div>
     </div>
   );
 }
