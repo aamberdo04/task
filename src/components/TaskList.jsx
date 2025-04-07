@@ -29,7 +29,6 @@ function TaskList() {
   // ✅ Show notification message
   const showNotification = (message) => {
     setNotification(message);
-    setTimeout(() => setNotification(""), 3000);
   };
 
   // ✅ Handle task complete toggle
@@ -60,6 +59,11 @@ function TaskList() {
     setSelectedTask(null);
     setIsModalOpen(false);
   };
+  // 👇 Add this inside TaskList component
+const handleCloseNotification = () => {
+  setNotification("");
+};
+
 
   const urgentImportant = tasks.filter((task) => task.isUrgent && task.isImportant);
   const notUrgentImportant = tasks.filter((task) => !task.isUrgent && task.isImportant);
@@ -68,8 +72,15 @@ function TaskList() {
 
   return (
     <div className="px-4 py-6 max-w-6xl mx-auto">
-      {/* ✅ Notification Message */}
-      {notification && <Notification message={notification} />}
+  {notification && (
+  <Notification
+    message={notification}
+    onClose={() => setNotification("")}
+  />
+)}
+
+
+
 
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">To Do</h2>
