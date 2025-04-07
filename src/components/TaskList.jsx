@@ -2,33 +2,55 @@ import React, { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
 import TaskDetailsModal from "./TaskDetailsModal";
 import AddProject from "./AddProject";
+import Notification from "./Notification"; // ✅
 
 function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [notification, setNotification] = useState(""); // ✅
+  const [hasLoaded, setHasLoaded] = useState(false); // ✅
 
-  // Load tasks from localStorage on mount
+  // ✅ Load tasks from localStorage on mount
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
     setTasks(savedTasks);
+    setHasLoaded(true);
   }, []);
 
-  // Handle checkbox completion
+  // ✅ Save tasks to localStorage after load
+  useEffect(() => {
+    if (hasLoaded) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }, [tasks, hasLoaded]);
+
+  // ✅ Show notification message
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => setNotification(""), 3000);
+  };
+
+  // ✅ Handle task complete toggle
   const handleCompleteTask = (updatedTask) => {
     const updatedTasks = tasks.map((task) =>
       task.id === updatedTask.id ? { ...task, completed: !task.completed } : task
     );
     setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  
+
+    // Also update selected task if open
     if (selectedTask && selectedTask.id === updatedTask.id) {
       setSelectedTask({ ...updatedTask, completed: !updatedTask.completed });
     }
+
+    showNotification(
+      !updatedTask.completed
+        ? "🎉 Task marked as completed!"
+        : "✅ Task unmarked."
+    );
   };
-  
-  // Open task modal
+
   const handleViewDetails = (task) => {
     setSelectedTask(task);
     setIsModalOpen(true);
@@ -39,7 +61,6 @@ function TaskList() {
     setIsModalOpen(false);
   };
 
-  // Quadrant categories
   const urgentImportant = tasks.filter((task) => task.isUrgent && task.isImportant);
   const notUrgentImportant = tasks.filter((task) => !task.isUrgent && task.isImportant);
   const urgentNotImportant = tasks.filter((task) => task.isUrgent && !task.isImportant);
@@ -47,7 +68,9 @@ function TaskList() {
 
   return (
     <div className="px-4 py-6 max-w-6xl mx-auto">
-      {/* Header */}
+      {/* ✅ Notification Message */}
+      {notification && <Notification message={notification} />}
+
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">To Do</h2>
         <button
@@ -58,14 +81,13 @@ function TaskList() {
         </button>
       </div>
 
-      {/* Add Task Popup */}
       <AddProject
         isVisible={isVisible}
         closePopUp={() => setIsVisible(false)}
         setTasks={setTasks}
+        tasks={tasks}
       />
 
-      {/* Task Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TaskCategory
           title="🔥 Urgent & Important"
@@ -97,19 +119,19 @@ function TaskList() {
         />
       </div>
 
-      {/* Modal for task details */}
       {isModalOpen && selectedTask && (
-        <TaskDetailsModal
-          task={selectedTask}
-          onClose={handleCloseModal}
-          onCompleteTask={handleCompleteTask}
-        />
-      )}
+  <TaskDetailsModal
+    task={selectedTask}
+    onClose={handleCloseModal}
+    onCompleteTask={handleCompleteTask}
+    showNotification={showNotification} // ✅ pass this down
+  />
+)}
+
     </div>
   );
 }
 
-// Category Section Component
 function TaskCategory({ title, tasks, bgColor, onViewDetails, onCompleteTask }) {
   return (
     <div className={`p-4 rounded-xl shadow ${bgColor}`}>
