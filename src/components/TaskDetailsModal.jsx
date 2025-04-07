@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function TaskDetailsModal({ task, onClose, onCompleteTask }) {
+function TaskDetailsModal({ task, onClose, onCompleteTask, showNotification, onDeleteTask }) {
   const [localTask, setLocalTask] = useState(task);
   const [localNotification, setLocalNotification] = useState("");
 
@@ -19,6 +19,11 @@ function TaskDetailsModal({ task, onClose, onCompleteTask }) {
         ? "🎉 Task marked as completed!"
         : "✅ Task unmarked."
     );
+  };
+
+  const handleDelete = () => {
+    onDeleteTask(localTask); // Trigger delete from parent
+    showNotification("🗑️ Task deleted!");
   };
 
   return (
@@ -69,12 +74,18 @@ function TaskDetailsModal({ task, onClose, onCompleteTask }) {
         </div>
 
         {/* Footer */}
-        <div className="mt-6">
+        <div className="mt-6 flex justify-between">
           <button
             className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-600"
             onClick={onClose}
           >
             Close
+          </button>
+          <button
+            className="bg-red-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-red-600"
+            onClick={handleDelete}
+          >
+            Delete Task
           </button>
         </div>
       </div>

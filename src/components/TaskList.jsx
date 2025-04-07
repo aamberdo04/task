@@ -49,7 +49,18 @@ function TaskList() {
         : "✅ Task unmarked."
     );
   };
-  
+
+  // ✅ Handle delete task
+  const handleDeleteTask = (taskToDelete) => {
+    const updatedTasks = tasks.filter((task) => task.id !== taskToDelete.id);
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+    // Show notification
+    showNotification("🗑️ Task deleted!");
+    setIsModalOpen(false);
+  };
+
   const handleViewDetails = (task) => {
     setSelectedTask(task);
     setIsModalOpen(true);
@@ -119,14 +130,14 @@ function TaskList() {
       </div>
 
       {isModalOpen && selectedTask && (
-  <TaskDetailsModal
-    task={selectedTask}
-    onClose={handleCloseModal}
-    onCompleteTask={handleCompleteTask}
-    showNotification={showNotification} // ✅ pass this down
-  />
-)}
-
+        <TaskDetailsModal
+          task={selectedTask}
+          onClose={handleCloseModal}
+          onCompleteTask={handleCompleteTask}
+          showNotification={showNotification} // ✅ pass this down
+          onDeleteTask={handleDeleteTask} // ✅ pass delete function down
+        />
+      )}
     </div>
   );
 }
