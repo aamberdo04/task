@@ -42,11 +42,15 @@ function TaskCard({ task, onViewDetails, onCompleteTask }) {
 
         <div className="flex items-center">
         <input
-          type="checkbox"
-          checked={task.completed}
-          onChange={handleCheckboxChange}  // Toggle the task completion status
-          className="mr-2"
-        />
+  type="checkbox"
+  checked={task.completed}
+  onChange={(e) => {
+    e.stopPropagation(); // 🛑 Prevent card click
+    onCompleteTask({ ...task, completed: e.target.checked });
+  }}
+  className="mr-2"
+/>
+
       </div>
       </div>
 

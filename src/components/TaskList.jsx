@@ -34,22 +34,22 @@ function TaskList() {
   // ✅ Handle task complete toggle
   const handleCompleteTask = (updatedTask) => {
     const updatedTasks = tasks.map((task) =>
-      task.id === updatedTask.id ? { ...task, completed: !task.completed } : task
+      task.id === updatedTask.id ? { ...task, completed: updatedTask.completed } : task
     );
     setTasks(updatedTasks);
-
-    // Also update selected task if open
+  
+    // Keep modal in sync
     if (selectedTask && selectedTask.id === updatedTask.id) {
-      setSelectedTask({ ...updatedTask, completed: !updatedTask.completed });
+      setSelectedTask({ ...updatedTask });
     }
-
+  
     showNotification(
-      !updatedTask.completed
+      updatedTask.completed
         ? "🎉 Task marked as completed!"
         : "✅ Task unmarked."
     );
   };
-
+  
   const handleViewDetails = (task) => {
     setSelectedTask(task);
     setIsModalOpen(true);
@@ -59,11 +59,6 @@ function TaskList() {
     setSelectedTask(null);
     setIsModalOpen(false);
   };
-  // 👇 Add this inside TaskList component
-const handleCloseNotification = () => {
-  setNotification("");
-};
-
 
   const urgentImportant = tasks.filter((task) => task.isUrgent && task.isImportant);
   const notUrgentImportant = tasks.filter((task) => !task.isUrgent && task.isImportant);
@@ -72,15 +67,8 @@ const handleCloseNotification = () => {
 
   return (
     <div className="px-4 py-6 max-w-6xl mx-auto">
-  {notification && (
-  <Notification
-    message={notification}
-    onClose={() => setNotification("")}
-  />
-)}
-
-
-
+      {/* ✅ Notification Message */}
+      {notification && <Notification message={notification} />}
 
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">To Do</h2>
