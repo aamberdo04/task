@@ -3,10 +3,11 @@ import React from "react";
 import TaskCard from "./TaskCard";
 import ImportantUrgentLabel from "../util/ImportantLabel"
 
-const TaskCategory = ({ title, tasks, bgColor, importantLabel, urgentLabel }) => (
+const TaskCategory = ({ title, subtitle, tasks, bgColor, importantLabel, urgentLabel }) => (
     <div className={`p-4 rounded-md shadow ${bgColor} min-h-[300px]`}>
-        <h3 className="font-semibold mb-2">{title}</h3>
-        <ImportantUrgentLabel importantLabel={importantLabel} urgentLabel={urgentLabel} /> {/* Using the badge component */}
+        <h3 className="font-semibold text-lg">{title}</h3>
+        {subtitle && <p className="text-sm text-gray-600 mb-2">{subtitle}</p>}
+        <ImportantUrgentLabel importantLabel={importantLabel} urgentLabel={urgentLabel} />
         {tasks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {tasks.map(task => (
@@ -18,5 +19,6 @@ const TaskCategory = ({ title, tasks, bgColor, importantLabel, urgentLabel }) =>
         )}
     </div>
 );
+
 
 export default TaskCategory;
