@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import TaskOptions from "./TaskOptions";
-import DateValidation from "./DateValidation";
+import TaskOptions from "../util/TaskOptions"
+import DateValidation from "../util/DateValidation";
 
 function EditTask({ task, onClose, onSaveChanges }) {
   const [taskName, setTaskName] = useState("");
@@ -71,10 +71,8 @@ function EditTask({ task, onClose, onSaveChanges }) {
           />
         </div>
 
-        {/* Date Picker */}
         <DateValidation selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
-        {/* Urgent / Important */}
         <TaskOptions
           isUrgent={isUrgent}
           setUrgent={setUrgent}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTask } from "../context/TaskContext"; // Importing the context
-import TaskOptions from "./TaskOptions";
-import DateValidation from "./DateValidation";
+import TaskOptions from "../util/TaskOptions";
+import DateValidation from "../util/DateValidation";
 
 function AddProject({ isVisible, closePopUp, setTasks, showNotification }) {
   const { taskName, setTaskName, taskDescription, setTaskDescription } = useTask();

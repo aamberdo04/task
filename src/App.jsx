@@ -1,7 +1,7 @@
 import React from "react";
 import { TaskProvider } from './context/TaskContext';
 import AddProject from "./components/AddProject";
-import Todo from "./components/Todo";
+import Todo from "./util/Todo"
 import TaskList from "./components/TaskList";
 
 

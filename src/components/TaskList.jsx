@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
 import TaskDetailsModal from "./TaskDetailsModal";
 import AddProject from "./AddProject";
-import Notification from "./Notification"; // ✅
-import EditTask from "./EditTask"; // Add import for the EditTask component
+import Notification from "../util/Notification"
+import EditTask from "./EditTask";
 
 
 function TaskList() {

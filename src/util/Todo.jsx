@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddProject from "./AddProject";
+import AddProject from "../components/AddProject";
 
 function Todo() {
     const [openPopup, setOpenPopup] = useState(false);
