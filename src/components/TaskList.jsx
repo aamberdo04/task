@@ -5,7 +5,6 @@ import AddProject from "./AddProject";
 import Notification from "../util/Notification"
 import EditTask from "./EditTask";
 
-
 function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -13,7 +12,6 @@ function TaskList() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [notification, setNotification] = useState({ message: "", type: "" });
-
   const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
@@ -21,34 +19,28 @@ function TaskList() {
     setTasks(savedTasks);
     setHasLoaded(true);
   }, []);
-
   useEffect(() => {
     if (hasLoaded) {
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
   }, [tasks, hasLoaded]);
-
   const showNotification = (message, type = "info") => {
     setNotification({ message, type });
   };
-  
 
   const handleCompleteTask = (updatedTask) => {
     const updatedTasks = tasks.map((task) =>
       task.id === updatedTask.id ? { ...task, completed: updatedTask.completed } : task
     );
     setTasks(updatedTasks);
-
     if (selectedTask && selectedTask.id === updatedTask.id) {
       setSelectedTask({ ...updatedTask });
     }
-
     showNotification(
       updatedTask.completed
         ? `<strong>Task Completed</strong><br />${updatedTask.taskName} has been marked as completed.`
         : `<strong>Task Unmarked</strong><br />${updatedTask.taskName} is now marked as incomplete.`
     );
-    
   };
 
   const handleDeleteTask = (taskToDelete) => {
@@ -62,7 +54,6 @@ function TaskList() {
     setSelectedTask(task);
     setIsEditModalOpen(true);
   };
-  
 
   const handleUpdateTask = (updatedTask) => {
     const updatedTasks = tasks.map((task) =>
@@ -89,19 +80,15 @@ function TaskList() {
   const urgentNotImportant = tasks.filter((task) => task.isUrgent && !task.isImportant);
   const notUrgentNotImportant = tasks.filter((task) => !task.isUrgent && !task.isImportant);
 
-
   return (
     <div className="px-4 py-6 max-w-6xl mx-auto">
-      {/* ✅ Notification Message */}
       {notification.message && (
-  <Notification
-    message={notification.message}
-    type={notification.type}
-    onClose={() => setNotification({ message: "", type: "" })}
-  />
-)}
-
-
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification({ message: "", type: "" })}
+        />
+      )}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">To Do</h2>
         <button
@@ -113,34 +100,31 @@ function TaskList() {
       </div>
 
       <AddProject
-  isVisible={isVisible}
-  closePopUp={() => setIsVisible(false)}
-  setTasks={setTasks}
-  tasks={tasks}
-  showNotification={showNotification} // ✅ Add this
-/>
-
-
+        isVisible={isVisible}
+        closePopUp={() => setIsVisible(false)}
+        setTasks={setTasks}
+        tasks={tasks}
+        showNotification={showNotification} 
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TaskCategory
-           title="Do"
-  subtitle="Urgent and Important"
+          title="Do"
+          subtitle="Urgent and Important"
           tasks={urgentImportant}
           bgColor="bg-red-100"
           onViewDetails={handleViewDetails}
           onCompleteTask={handleCompleteTask}
         />
         <TaskCategory
-        title="Schedule"
+          title="Schedule"
           subtitle="Not Urgent & Important"
-
           tasks={notUrgentImportant}
           bgColor="bg-green-100"
           onViewDetails={handleViewDetails}
           onCompleteTask={handleCompleteTask}
         />
         <TaskCategory
-        title = "Delegate"
+          title="Delegate"
           subtitle="Urgent & Not Important"
           tasks={urgentNotImportant}
           bgColor="bg-yellow-100"
@@ -148,7 +132,7 @@ function TaskList() {
           onCompleteTask={handleCompleteTask}
         />
         <TaskCategory
-        title = "Eliminate"
+          title="Eliminate"
           subtitle="Not Urgent & Not Important"
           tasks={notUrgentNotImportant}
           bgColor="bg-gray-100"
@@ -159,67 +143,54 @@ function TaskList() {
 
       {isModalOpen && selectedTask && (
         <TaskDetailsModal
-        task={selectedTask}
-        onClose={handleCloseModal}
-        onCompleteTask={handleCompleteTask}
-        showNotification={showNotification}
-        onDeleteTask={handleDeleteTask}
-        onUpdateTask={handleUpdateTask} // ✅ Add this
-      />
-      
+          task={selectedTask}
+          onClose={handleCloseModal}
+          onCompleteTask={handleCompleteTask}
+          showNotification={showNotification}
+          onDeleteTask={handleDeleteTask}
+          onUpdateTask={handleUpdateTask}
+        />
       )}
-
-      {/* Edit Task Modal */}
       {isEditModalOpen && selectedTask && (
         <EditTask
           task={selectedTask}
           onClose={() => setIsEditModalOpen(false)}
-          onSaveChanges={handleUpdateTask} // Pass handleUpdateTask to EditTask
+          onSaveChanges={handleUpdateTask}
         />
       )}
     </div>
   );
 
-
   function TaskCategory({ title, subtitle, tasks, bgColor, onViewDetails, onCompleteTask }) {
     return (
       <div className={`p-4 rounded-xl shadow ${bgColor} flex flex-col justify-start`}>
-        {/* Title */}
         <h3 className="text-lg font-semibold leading-tight">{title}</h3>
-  
-        {/* Subtitle with reduced top space and added bottom space */}
         {subtitle && (
           <p className="text-sm text-gray-600 mt-1 mb-4 leading-snug">
-          {subtitle}
-        </p>
-        
+            {subtitle}
+          </p>
         )}
-  
-        {/* Task content */}
-        {tasks.length === 0 ? (
-  <div className="border border-dashed border-gray-300 rounded-md px-4 py-6 bg-white/60 text-center text-gray-600 text-sm">
-    No task in this quadrant
-  </div>
-) : (
-  <div className="flex flex-col gap-4">
-    {tasks.map((task) => (
-      <TaskCard
-        key={task.id}
-        task={task}
-        onViewDetails={onViewDetails}
-        onCompleteTask={onCompleteTask}
-        onEditTask={handleEditTask}
-      />
-    ))}
-  </div>
-)}
 
+        {tasks.length === 0 ? (
+          <div className="border border-dashed border-gray-300 rounded-md px-4 py-6 bg-white/60 text-center text-gray-600 text-sm">
+            No task in this quadrant
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onViewDetails={onViewDetails}
+                onCompleteTask={onCompleteTask}
+                onEditTask={handleEditTask}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }
-  
-  
-
 }
 
 export default TaskList;

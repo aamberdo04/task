@@ -52,8 +52,6 @@ function AddProject({ isVisible, closePopUp, setTasks, showNotification }) {
           <span className="font-semibold text-[20px] mt-1">Add New Task</span>
           <button onClick={closePopUp} className="text-gray-500 hover:text-gray-800">✖</button>
         </div>
-
-        {/* Task Name Input */}
         <div className="flex flex-col gap-2 mt-6 px-3">
           <span className="text-sm opacity-80 md:font-bold">Add Task</span>
           <input
