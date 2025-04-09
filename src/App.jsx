@@ -8,7 +8,7 @@ import TaskList from "./components/TaskList";
 function App() {
     return (
         <TaskProvider>
-            <h1 className="text-2xl font-bold text-center my-6">Task Manager</h1>
+            <h1 className="text-2xl font-bold text-center my-6"></h1>
             <AddProject />
             <TaskList /> {/* Display categorized tasks */}
         </TaskProvider>

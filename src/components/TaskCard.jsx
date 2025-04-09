@@ -8,7 +8,6 @@ function TaskCard({ task, onViewDetails, onCompleteTask }) {
   return (
     <div className="w-full max-w-md bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition">
       <div className="flex items-start justify-between">
-        {/* Task content */}
         <div
           onClick={() => onViewDetails(task)}
           className={`flex-1 cursor-pointer ${

@@ -62,7 +62,7 @@ function TaskList() {
     setTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     setIsEditModalOpen(false);
-    showNotification("✅ Task updated!");
+    showNotification(" Task updated!");
   };
 
   const handleViewDetails = (task) => {
@@ -89,8 +89,12 @@ function TaskList() {
           onClose={() => setNotification({ message: "", type: "" })}
         />
       )}
+
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">To Do</h2>
+        <div className="mb-8">
+          <h2 className="text-4xl font-bold text-gray-800 mb-2">Task Manager</h2>
+          <p className="text-gray-600 text-md">Prioritize what truly matters. Organize your tasks using Eisenhower Matrix.</p>
+        </div>
         <button
           className="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600"
           onClick={() => setIsVisible(true)} // Open AddProject modal
@@ -104,7 +108,7 @@ function TaskList() {
         closePopUp={() => setIsVisible(false)}
         setTasks={setTasks}
         tasks={tasks}
-        showNotification={showNotification} 
+        showNotification={showNotification}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TaskCategory
