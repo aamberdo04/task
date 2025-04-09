@@ -42,15 +42,7 @@ function TaskCard({ task, onViewDetails, onCompleteTask }) {
                 Important
               </span>
             )}
-            <span
-              className={`inline-block text-xs py-1 px-3 rounded-full ${
-                task.completed
-                  ? "bg-green-500 text-white"
-                  : "bg-white border border-gray-400 text-gray-800"
-              }`}
-            >
-              {task.completed ? "Completed" : "Pending"}
-            </span>
+          
           </div>
 
           {/* Bold Due Date */}
